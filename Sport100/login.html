@@ -59,7 +59,6 @@
 					</li>
 				</ul>
 
-				<!-- 🔥 FORMULARIO DE REGISTRO -->
 				<div id="registro" style="display:none; margin-top:20px;">
 
 					<h3>Registro de usuario</h3>
@@ -87,7 +86,6 @@
 	<script>
 	let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-	// 🔐 LOGIN
 	function login() {
 
 		let email = document.getElementById("email").value;
@@ -111,7 +109,6 @@
 
 		alert("Bienvenido " + usuario.nombre);
 
-		// 🔥 redirección por rol
 		if (usuario.rol === "Administrador") {
 			window.location.href = "admin.html";
 		} else {
@@ -119,17 +116,14 @@
 		}
 	}
 
-	// 👤 MOSTRAR REGISTRO
 	function mostrarRegistro() {
 		document.getElementById("registro").style.display = "block";
 	}
 
-	// ❌ OCULTAR REGISTRO
 	function ocultarRegistro() {
 		document.getElementById("registro").style.display = "none";
 	}
 
-	// 🧾 REGISTRAR USUARIO
 	function registrarUsuario() {
 
 		let nombre = document.getElementById("r_nombre").value;
