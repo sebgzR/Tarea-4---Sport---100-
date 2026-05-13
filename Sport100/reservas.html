@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Sport - 100</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+</head>
+
+<body class="is-preload">
+
+<div id="wrapper">
+
+	<div id="main">
+
+		<article class="post featured">
+
+			<header class="major">
+				<h2>Reserva de canchas</h2>
+			</header>
+
+			<div class="field">
+				<input id="nombre" placeholder="Nombre">
+			</div>
+
+			<div class="field">
+				<input type="date" id="fecha">
+			</div>
+
+			<div class="field">
+				<input type="time" id="horaInicio">
+			</div>
+
+			<div class="field">
+				<input type="time" id="horaFin">
+			</div>
+
+			<div class="field">
+				<select id="cancha">
+					<option>Cancha La 100</option>
+					<option>Cancha Central</option>
+					<option>Cancha Sintética Norte</option>
+				</select>
+			</div>
+
+			<ul class="actions special">
+				<li>
+					<button onclick="reservar()" class="button primary">
+						Reservar
+					</button>
+				</li>
+			</ul>
+
+		</article>
+
+	</div>
+
+</div>
+
+<script>
+
+let reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+
+function convertir(h) {
+	let [a,b] = h.split(":");
+	return parseInt(a)*60 + parseInt(b);
+}
+
+function hayChoque(nueva) {
+
+	return reservas.some(r => {
+
+		if (r.cancha !== nueva.cancha) return false;
+		if (r.fecha !== nueva.fecha) return false;
+		if (r.estado === "Cancelada") return false;
+
+		let n1 = convertir(nueva.horaInicio);
+		let n2 = convertir(nueva.horaFin);
+
+		let e1 = convertir(r.horaInicio);
+		let e2 = convertir(r.horaFin);
+
+		return (n1 < e2 && n2 > e1);
+	});
+}
+
+function reservar() {
+
+	let nueva = {
+		usuario: document.getElementById("nombre").value,
+		fecha: document.getElementById("fecha").value,
+		horaInicio: document.getElementById("horaInicio").value,
+		horaFin: document.getElementById("horaFin").value,
+		cancha: document.getElementById("cancha").value,
+		estado: "Pendiente"
+	};
+
+	if (!nueva.usuario || !nueva.fecha || !nueva.horaInicio || !nueva.horaFin) {
+		alert("Completa todos los campos");
+		return;
+	}
+
+	if (hayChoque(nueva)) {
+		alert(" Ya existe una reserva en ese horario");
+		return;
+	}
+
+	reservas.push(nueva);
+	localStorage.setItem("reservas", JSON.stringify(reservas));
+
+	alert("Reserva creada");
+	window.location.href = "confirmacion.html";
+}
+
+</script>
+
+</body>
+</html>

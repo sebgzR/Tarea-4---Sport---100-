@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Sport - 100</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+
+	<body class="is-preload">
+
+	<div id="wrapper" class="fade-in">
+
+		<div id="intro">
+			<h1>Sport - 100</h1>
+			<p>Inicio de sesión del sistema.</p>
+		</div>
+
+		<div id="main">
+
+			<article class="post featured">
+
+				<header class="major">
+					<h2>Inicio de Sesión</h2>
+				</header>
+
+				<div class="fields">
+
+					<div class="field">
+						<label>Correo</label>
+						<input type="email" id="email">
+					</div>
+
+					<div class="field">
+						<label>Contraseña</label>
+						<input type="password" id="password">
+					</div>
+
+				</div>
+
+				<ul class="actions special">
+					<li>
+						<button class="button primary" onclick="login()">
+							Ingresar
+						</button>
+					</li>
+
+					<li>
+						<a href="#" class="button" onclick="mostrarRegistro()">
+							Registrarse
+						</a>
+					</li>
+
+					<li>
+						<a href="index.html" class="button">
+							Volver al inicio
+						</a>
+					</li>
+				</ul>
+
+				<!-- 🔥 FORMULARIO DE REGISTRO -->
+				<div id="registro" style="display:none; margin-top:20px;">
+
+					<h3>Registro de usuario</h3>
+
+					<input type="text" id="r_nombre" placeholder="Nombre"><br><br>
+					<input type="email" id="r_correo" placeholder="Correo"><br><br>
+					<input type="password" id="r_password" placeholder="Contraseña"><br><br>
+
+					<button type="button" onclick="registrarUsuario()">
+						Crear cuenta
+					</button>
+
+					<button type="button" onclick="ocultarRegistro()">
+						Cancelar
+					</button>
+
+				</div>
+
+			</article>
+
+		</div>
+
+	</div>
+
+	<script>
+	let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+	// 🔐 LOGIN
+	function login() {
+
+		let email = document.getElementById("email").value;
+		let password = document.getElementById("password").value;
+
+		if (!email || !password) {
+			alert("Completa los campos");
+			return;
+		}
+
+		let usuario = usuarios.find(u =>
+			u.correo === email && u.password === password
+		);
+
+		if (!usuario) {
+			alert("Credenciales incorrectas");
+			return;
+		}
+
+		localStorage.setItem("usuarioActivo", JSON.stringify(usuario));
+
+		alert("Bienvenido " + usuario.nombre);
+
+		// 🔥 redirección por rol
+		if (usuario.rol === "Administrador") {
+			window.location.href = "admin.html";
+		} else {
+			window.location.href = "reservas.html";
+		}
+	}
+
+	// 👤 MOSTRAR REGISTRO
+	function mostrarRegistro() {
+		document.getElementById("registro").style.display = "block";
+	}
+
+	// ❌ OCULTAR REGISTRO
+	function ocultarRegistro() {
+		document.getElementById("registro").style.display = "none";
+	}
+
+	// 🧾 REGISTRAR USUARIO
+	function registrarUsuario() {
+
+		let nombre = document.getElementById("r_nombre").value;
+		let correo = document.getElementById("r_correo").value;
+		let password = document.getElementById("r_password").value;
+
+		if (!nombre || !correo || !password) {
+			alert("Completa todos los campos");
+			return;
+		}
+
+		let existe = usuarios.find(u => u.correo === correo);
+
+		if (existe) {
+			alert("Este correo ya está registrado");
+			return;
+		}
+
+		usuarios.push({
+			id: Date.now(),
+			nombre,
+			correo,
+			password,
+			rol: "Usuario"
+		});
+
+		localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+		alert("Usuario registrado correctamente");
+
+		ocultarRegistro();
+	}
+	</script>
+
+	</body>
+</html>

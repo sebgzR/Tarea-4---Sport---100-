@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Sport - 100</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+</head>
+
+<body class="is-preload">
+
+<div id="wrapper" class="fade-in">
+
+	<!-- HEADER -->
+	<header id="header">
+		<a href="index.html" class="logo">Sport - 100</a>
+	</header>
+
+	<!-- NAV -->
+	<nav id="nav">
+		<ul class="links">
+			<li><a href="index.html">Inicio</a></li>
+			<li class="active"><a href="gestión-usuarios.html">Usuarios</a></li>
+		</ul>
+	</nav>
+
+	<!-- MAIN -->
+	<div id="main">
+
+		<article class="post featured">
+
+			<header class="major">
+				<h2>Usuarios Registrados</h2>
+				<p>Consulta, agrega y elimina usuarios del sistema.</p>
+			</header>
+
+			<!-- TABLA -->
+			<div class="table-wrapper">
+				<table>
+					<thead>
+						<tr>
+							<th>Nombre</th>
+							<th>Correo</th>
+							<th>Rol</th>
+							<th>Acción</th>
+						</tr>
+					</thead>
+
+					<tbody id="tablaUsuarios"></tbody>
+				</table>
+			</div>
+
+			<!-- BOTÓN -->
+			<ul class="actions special">
+				<li>
+					<a href="#" class="button" onclick="mostrarFormulario()">
+						Agregar usuario
+					</a>
+				</li>
+                <li>
+                    <a href="admin.html" class="button">
+                         Volver al panel
+                    </a>
+                </li>
+			</ul>
+
+			<!-- FORMULARIO -->
+			<div id="formulario" style="display:none; margin-top:20px;">
+				<h3>Nuevo Usuario</h3>
+
+				<input type="text" id="nombre" placeholder="Nombre"><br><br>
+				<input type="email" id="correo" placeholder="Correo"><br><br>
+
+				<select id="rol">
+					<option>Usuario</option>
+					<option>Administrador</option>
+				</select><br><br>
+
+				<button onclick="agregarUsuario()">Guardar</button>
+				<button onclick="cerrarFormulario()">Cancelar</button>
+			</div>
+
+		</article>
+
+	</div>
+
+</div>
+
+<script>
+let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+
+window.onload = function () {
+	renderizar();
+};
+
+
+function mostrarFormulario() {
+	document.getElementById("formulario").style.display = "block";
+}
+
+
+function cerrarFormulario() {
+	document.getElementById("formulario").style.display = "none";
+}
+
+
+function agregarUsuario() {
+	let nombre = document.getElementById("nombre").value;
+	let correo = document.getElementById("correo").value;
+	let rol = document.getElementById("rol").value;
+
+	if (!nombre || !correo) {
+		alert("Completa todos los campos");
+		return;
+	}
+
+	usuarios.push({ nombre, correo, rol });
+
+	localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+	renderizar();
+	cerrarFormulario();
+
+	document.getElementById("nombre").value = "";
+	document.getElementById("correo").value = "";
+}
+
+
+function renderizar() {
+	let tabla = document.getElementById("tablaUsuarios");
+	tabla.innerHTML = "";
+
+	usuarios.forEach((u, i) => {
+		tabla.innerHTML += `
+			<tr>
+				<td>${u.nombre}</td>
+				<td>${u.correo}</td>
+				<td>${u.rol}</td>
+				<td>
+					<button onclick="eliminarUsuario(${i})">Eliminar</button>
+				</td>
+			</tr>
+		`;
+	});
+}
+
+
+function eliminarUsuario(i) {
+	usuarios.splice(i, 1);
+	localStorage.setItem("usuarios", JSON.stringify(usuarios));
+	renderizar();
+}
+</script>
+
+</body>
+</html>
